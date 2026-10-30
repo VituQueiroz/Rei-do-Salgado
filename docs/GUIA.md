@@ -2,7 +2,7 @@
 
 ## 1. Como usar o site (cliente)
 
-1. Abra o site. O cardápio aparece com todos os produtos.
+1. Abra o site (https://oreidosalgado.vercel.app). O cardápio aparece com todos os produtos.
 2. Use a **busca** ou os **botões de categoria** (Salgados Fritos, Bebidas…) para filtrar.
 3. Clique em **Adicionar** no produto. Use **+** e **−** para mudar a quantidade.
 4. Clique em **🛒 Carrinho** (canto superior direito).
@@ -18,7 +18,7 @@
 
 Requer o Supabase configurado (veja o README).
 
-1. Acesse `/admin` (ex.: `http://localhost:5173/admin`).
+1. Acesse `/admin`: https://oreidosalgado.vercel.app/admin (ou `http://localhost:5173/admin` no computador).
 2. Entre com o e-mail e a senha do administrador criados no Supabase. Contas que não estão na tabela `admins` veem a mensagem "Acesso negado".
 3. No painel:
    - **+ Novo produto**: preencha foto, nome, descrição, preço (ex.: `7,50`), categoria e disponibilidade. Para criar uma categoria nova, digite no campo "Nova categoria" e clique em **Adicionar**.
@@ -40,7 +40,7 @@ Requer o Supabase configurado (veja o README).
 ### Obrigatório para colocar no ar
 - [x] Criar o projeto no Supabase, rodar `supabase/schema.sql`, criar o usuário administrador e cadastrá-lo com `supabase/admin.sql`.
 - [ ] Desativar o cadastro público no Supabase (Authentication → Sign In / Providers → "Allow new users to sign up").
-- [ ] Cadastrar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` e `VITE_WHATSAPP_NUMBER` na Vercel e fazer redeploy.
+- [x] Cadastrar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` e `VITE_WHATSAPP_NUMBER` na Vercel e fazer redeploy. Site no ar em https://oreidosalgado.vercel.app.
 - [x] Testar o painel com o banco real.
 
 ### Melhorias recomendadas

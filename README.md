@@ -2,6 +2,8 @@
 
 > Cardápio digital com carrinho de compras e envio de pedidos via WhatsApp.
 
+🌐 **Acesse o site:** [oreidosalgado.vercel.app](https://oreidosalgado.vercel.app)
+
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite)
@@ -108,10 +110,10 @@ rei-do-salgado/
 
 ```bash
 # Clone o repositório
-git clone https://github.com/brenopavanelli/web-lanchonete.git
+git clone https://github.com/VituQueiroz/Rei-do-Salgado.git
 
 # Acesse a pasta do projeto
-cd web-lanchonete
+cd Rei-do-Salgado
 
 # Instale as dependências
 npm install i
@@ -182,7 +184,7 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
 
 ### Usando o painel
 
-Acesse [http://localhost:5173/admin](http://localhost:5173/admin) e entre com o usuário criado. No painel é possível:
+Acesse [http://localhost:5173/admin](http://localhost:5173/admin) (ou [oreidosalgado.vercel.app/admin](https://oreidosalgado.vercel.app/admin) em produção) e entre com o usuário criado. No painel é possível:
 
 - Cadastrar novos produtos (com envio de foto)
 - Editar nome, descrição, preço, categoria e foto
