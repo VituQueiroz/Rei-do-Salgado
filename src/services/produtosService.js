@@ -98,8 +98,16 @@ export async function alterarDisponibilidade(id, disponivel) {
 
 export async function excluirProduto(id) {
   exigirSupabase();
-  const { error } = await supabase.from("produtos").delete().eq("id", id);
+  const { data, error } = await supabase
+    .from("produtos")
+    .delete()
+    .eq("id", id)
+    .select("id");
   if (error) throw error;
+  // Sem permissão, o banco não devolve erro: só não apaga nenhuma linha
+  if (data.length === 0) {
+    throw new Error("o produto não foi excluído. Entre de novo no painel e tente outra vez.");
+  }
 }
 
 export async function criarCategoria(nome) {

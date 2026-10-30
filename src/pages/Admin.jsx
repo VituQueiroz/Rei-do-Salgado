@@ -106,6 +106,9 @@ function Painel() {
   const [busca, setBusca] = useState("");
   // null = formulário fechado | {} = novo produto | produto = edição
   const [produtoEmEdicao, setProdutoEmEdicao] = useState(null);
+  // Produto aguardando confirmação de exclusão (null = nenhum)
+  const [produtoParaExcluir, setProdutoParaExcluir] = useState(null);
+  const [excluindo, setExcluindo] = useState(false);
 
   // Incrementar "versao" faz a lista ser recarregada do banco
   const [versao, setVersao] = useState(0);
@@ -132,13 +135,20 @@ function Painel() {
     }
   }
 
-  async function handleExcluir(produto) {
-    if (!window.confirm(`Excluir "${produto.nome}" do cardápio?`)) return;
+  // A confirmação fica no próprio painel: window.confirm é bloqueado em
+  // alguns navegadores embutidos e devolve "cancelar" sem mostrar nada
+  async function handleExcluir() {
+    const produto = produtoParaExcluir;
+    setExcluindo(true);
     try {
       await excluirProduto(produto.id);
       setProdutos((prev) => prev.filter((p) => p.id !== produto.id));
+      setErro("");
     } catch (e) {
       setErro(`Erro ao excluir: ${e.message}`);
+    } finally {
+      setExcluindo(false);
+      setProdutoParaExcluir(null);
     }
   }
 
@@ -255,7 +265,7 @@ function Painel() {
                     Editar
                   </button>
                   <button
-                    onClick={() => handleExcluir(produto)}
+                    onClick={() => setProdutoParaExcluir(produto)}
                     className="font-body text-sm font-semibold text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors"
                   >
                     Excluir
@@ -275,6 +285,38 @@ function Painel() {
           onFechar={() => setProdutoEmEdicao(null)}
           onSalvo={handleSalvo}
         />
+      )}
+
+      {produtoParaExcluir && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/40">
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="bg-white w-full max-w-sm rounded-2xl shadow-xl p-6 space-y-4 font-body text-salgado-dark"
+          >
+            <h2 className="font-display font-bold text-xl">Excluir produto?</h2>
+            <p className="text-sm">
+              <strong>{produtoParaExcluir.nome}</strong> será removido do cardápio. Essa ação não
+              pode ser desfeita.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setProdutoParaExcluir(null)}
+                disabled={excluindo}
+                className="text-sm font-semibold text-gray-500 hover:bg-gray-100 px-4 py-2 rounded-full transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleExcluir}
+                disabled={excluindo}
+                className="bg-red-500 hover:bg-red-600 disabled:opacity-60 text-white text-sm font-bold px-4 py-2 rounded-full transition-colors"
+              >
+                {excluindo ? "Excluindo..." : "Excluir"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

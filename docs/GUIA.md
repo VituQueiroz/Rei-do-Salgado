@@ -24,7 +24,7 @@ Requer o Supabase configurado (veja o README).
    - **+ Novo produto**: preencha foto, nome, descrição, preço (ex.: `7,50`), categoria e disponibilidade. Para criar uma categoria nova, digite no campo "Nova categoria" e clique em **Adicionar**.
    - **Editar**: altera qualquer dado do produto, inclusive a foto.
    - **Disponível / Indisponível**: clique na etiqueta para alternar. O cardápio público muda na hora.
-   - **Excluir**: remove o produto (pede confirmação).
+   - **Excluir**: abre uma janela de confirmação no próprio painel; clique em **Excluir** para remover ou em **Cancelar** para desistir.
    - **Buscar produto**: filtra a lista pelo nome.
 4. **Ver cardápio** abre o site público; **Sair** encerra a sessão.
 
@@ -33,15 +33,15 @@ Requer o Supabase configurado (veja o README).
 - Lint e build de produção sem erros.
 - Cardápio funcionando sem banco (usa `src/data/produtos.js`).
 - Painel testado contra um servidor que simula o Supabase: login (senha errada e certa), validação do formulário, criar categoria, criar produto com foto, editar com troca de foto, alternar disponibilidade, excluir e sair.
-- **Ainda não testado com um projeto Supabase real.**
+- Testado com o projeto Supabase real: o cardápio carrega do banco, visitantes sem login não conseguem gravar, e o administrador consegue entrar, criar, editar, alternar disponibilidade, enviar foto e excluir.
 
 ## 4. O que precisa ser implementado depois
 
 ### Obrigatório para colocar no ar
-- [ ] Criar o projeto no Supabase, rodar `supabase/schema.sql`, criar o usuário administrador e cadastrá-lo com `supabase/admin.sql`.
+- [x] Criar o projeto no Supabase, rodar `supabase/schema.sql`, criar o usuário administrador e cadastrá-lo com `supabase/admin.sql`.
 - [ ] Desativar o cadastro público no Supabase (Authentication → Sign In / Providers → "Allow new users to sign up").
 - [ ] Cadastrar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` e `VITE_WHATSAPP_NUMBER` na Vercel e fazer redeploy.
-- [ ] Testar o painel com o banco real.
+- [x] Testar o painel com o banco real.
 
 ### Melhorias recomendadas
 - [ ] **Gerenciar categorias**: renomear, excluir e mudar a ordem pelo painel (hoje só dá para criar).
