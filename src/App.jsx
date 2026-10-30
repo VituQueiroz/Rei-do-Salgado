@@ -1,6 +1,6 @@
 // src/App.jsx
-import { useState, useMemo } from "react";
-import { produtos, categorias } from "./data/produtos";
+import { useState, useMemo, useEffect } from "react";
+import { listarProdutos, listarCategorias } from "./services/produtosService";
 import Header from "./components/Header";
 import CardProduto from "./components/Cardproduto";
 import Carrinho from "./components/Carrinho";
@@ -11,6 +11,20 @@ export default function App() {
   const [carrinhoAberto, setCarrinhoAberto] = useState(false);
   const [categoriaAtiva, setCategoriaAtiva] = useState("Todos");
   const [busca, setBusca] = useState("");
+  const [produtos, setProdutos] = useState([]);
+  const [categorias, setCategorias] = useState(["Todos"]);
+  const [carregando, setCarregando] = useState(true);
+  const [erroCarregamento, setErroCarregamento] = useState("");
+
+  useEffect(() => {
+    Promise.all([listarProdutos(), listarCategorias()])
+      .then(([listaProdutos, listaCategorias]) => {
+        setProdutos(listaProdutos);
+        setCategorias(["Todos", ...listaCategorias.map((c) => c.nome)]);
+      })
+      .catch(() => setErroCarregamento("Não foi possível carregar o cardápio."))
+      .finally(() => setCarregando(false));
+  }, []);
 
   function adicionarAoCarrinho(produto) {
     setCarrinho((prev) => {
@@ -52,7 +66,7 @@ export default function App() {
       const porBusca = p.nome.toLowerCase().includes(busca.toLowerCase());
       return porCategoria && porBusca;
     });
-  }, [categoriaAtiva, busca]);
+  }, [produtos, categoriaAtiva, busca]);
 
   return (
     <div className="min-h-screen bg-salgado-light">
@@ -112,7 +126,16 @@ export default function App() {
         </div>
 
         {/* Grid de produtos */}
-        {produtosFiltrados.length === 0 ? (
+        {carregando ? (
+          <div className="text-center py-16 text-gray-400">
+            <p className="font-body font-semibold text-lg">Carregando cardápio...</p>
+          </div>
+        ) : erroCarregamento ? (
+          <div className="text-center py-16 text-red-400 space-y-2">
+            <p className="text-5xl">⚠️</p>
+            <p className="font-body font-semibold text-lg">{erroCarregamento}</p>
+          </div>
+        ) : produtosFiltrados.length === 0 ? (
           <div className="text-center py-16 text-gray-400 space-y-2">
             <p className="text-5xl">🔎</p>
             <p className="font-body font-semibold text-lg">Nenhum produto encontrado</p>

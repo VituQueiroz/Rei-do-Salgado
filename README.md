@@ -69,16 +69,25 @@ rei-do-salgado/
 │           └── ...
 ├── src/
 │   ├── components/
+│   │   ├── admin/
+│   │   │   └── FormProduto.jsx
 │   │   ├── Header.jsx
 │   │   ├── CardProduto.jsx
 │   │   ├── Carrinho.jsx
 │   │   └── Footer.jsx
 │   ├── data/
 │   │   └── produtos.js
+│   ├── pages/
+│   │   └── Admin.jsx
 │   ├── services/
+│   │   ├── supabase.js
+│   │   └── produtosService.js
 │   ├── App.jsx
 │   └── main.jsx
+├── supabase/
+│   └── schema.sql
 ├── index.html
+├── vercel.json
 ├── vite.config.js
 ├── .env
 ├── .env.example
@@ -151,23 +160,35 @@ O projeto está configurado para deploy automático na **Vercel**. Cada push na 
 
 ---
 
-## 🔧 Como Adicionar Produtos
+## 🗄️ Banco de Dados e Painel do Administrador
 
-Edite o arquivo `src/data/produtos.js` seguindo o modelo:
+O cardápio é armazenado no [Supabase](https://supabase.com/) (PostgreSQL). Se as variáveis do Supabase não estiverem no `.env`, o site usa o cardápio local de `src/data/produtos.js` (somente leitura).
 
-```js
-{
-  id: 11,
-  nome: "Nome do Produto",
-  descricao: "Descrição curta e apetitosa do produto.",
-  preco: 7.50,
-  categoria: "Salgados Fritos", // deve existir em `categorias`
-  imageUrl: "/images/produtos/nome-do-produto.jpg",
-  disponivel: true,
-}
+### Configurando o Supabase
+
+1. Crie um projeto gratuito em [supabase.com](https://supabase.com/).
+2. Em **SQL Editor → New query**, cole o conteúdo de `supabase/schema.sql` e clique em **Run**. Isso cria as tabelas `categorias` e `produtos`, as regras de segurança, o bucket de fotos e o cardápio inicial.
+3. Em **Authentication → Users → Add user**, crie o usuário administrador (e-mail e senha).
+   Depois, em **Authentication → Sign In / Providers**, **desative "Allow new users to sign up"** — caso contrário qualquer pessoa poderia criar uma conta e editar o cardápio.
+4. Em **Project Settings → API**, copie a *Project URL* e a chave *anon public* para o `.env`:
+
+```env
+VITE_SUPABASE_URL=https://xxxxxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
 ```
 
-As imagens devem ser salvas em `public/images/produtos/` no formato **JPG** ou **WebP**, com dimensões de **400x300px**.
+> A chave *anon* pode ficar no front-end: as regras de segurança (RLS) do banco só permitem leitura para visitantes. Inserir, alterar e excluir exige login. **Nunca** use a chave *service_role* no front-end.
+
+### Usando o painel
+
+Acesse [http://localhost:5173/admin](http://localhost:5173/admin) e entre com o usuário criado. No painel é possível:
+
+- Cadastrar novos produtos (com envio de foto)
+- Editar nome, descrição, preço, categoria e foto
+- Marcar produtos como disponíveis/indisponíveis
+- Excluir produtos e criar novas categorias
+
+Na Vercel, cadastre também `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` em **Settings → Environment Variables**. O arquivo `vercel.json` garante que a rota `/admin` funcione em produção.
 
 ---
 
