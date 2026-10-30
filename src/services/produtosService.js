@@ -143,6 +143,14 @@ export async function obterSessao() {
   return data.session;
 }
 
+// Confere na tabela "admins" se o usuário logado pode editar o cardápio
+export async function ehAdministrador() {
+  if (!supabaseConfigurado) return false;
+  const { data, error } = await supabase.rpc("is_admin");
+  if (error) throw error;
+  return data === true;
+}
+
 export function observarSessao(callback) {
   if (!supabaseConfigurado) return () => {};
   const { data } = supabase.auth.onAuthStateChange((_evento, sessao) => callback(sessao));

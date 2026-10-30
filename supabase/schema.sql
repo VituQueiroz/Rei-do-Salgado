@@ -35,9 +35,28 @@ create trigger produtos_atualizado_em
   before update on produtos
   for each row execute function set_atualizado_em();
 
+-- ── Administradores ─────────────────────────────────────
+-- Só os usuários listados aqui podem alterar o cardápio.
+-- Mesmo que alguém crie uma conta no Supabase, não consegue editar nada.
+-- Para cadastrar um administrador, use o script supabase/admin.sql.
+
+create table if not exists admins (
+  user_id uuid primary key references auth.users(id) on delete cascade
+);
+
+alter table admins enable row level security;
+-- Sem políticas: a tabela não pode ser lida nem alterada pelo site.
+
+create or replace function is_admin()
+returns boolean
+language sql stable security definer set search_path = public
+as $$
+  select exists (select 1 from admins where user_id = auth.uid());
+$$;
+
 -- ── Segurança (Row Level Security) ──────────────────────
 -- Qualquer visitante pode LER o cardápio.
--- Somente usuários logados (administradores) podem ALTERAR.
+-- Somente administradores podem ALTERAR.
 
 alter table categorias enable row level security;
 alter table produtos   enable row level security;
@@ -47,14 +66,14 @@ create policy "leitura publica" on categorias for select using (true);
 
 drop policy if exists "admin escreve" on categorias;
 create policy "admin escreve" on categorias for all
-  to authenticated using (true) with check (true);
+  to authenticated using (is_admin()) with check (is_admin());
 
 drop policy if exists "leitura publica" on produtos;
 create policy "leitura publica" on produtos for select using (true);
 
 drop policy if exists "admin escreve" on produtos;
 create policy "admin escreve" on produtos for all
-  to authenticated using (true) with check (true);
+  to authenticated using (is_admin()) with check (is_admin());
 
 -- ── Storage: bucket público para as fotos dos produtos ──
 
@@ -68,15 +87,15 @@ create policy "fotos leitura publica" on storage.objects for select
 
 drop policy if exists "fotos admin envia" on storage.objects;
 create policy "fotos admin envia" on storage.objects for insert
-  to authenticated with check (bucket_id = 'produtos');
+  to authenticated with check (bucket_id = 'produtos' and is_admin());
 
 drop policy if exists "fotos admin altera" on storage.objects;
 create policy "fotos admin altera" on storage.objects for update
-  to authenticated using (bucket_id = 'produtos');
+  to authenticated using (bucket_id = 'produtos' and is_admin());
 
 drop policy if exists "fotos admin remove" on storage.objects;
 create policy "fotos admin remove" on storage.objects for delete
-  to authenticated using (bucket_id = 'produtos');
+  to authenticated using (bucket_id = 'produtos' and is_admin());
 
 -- ── Dados iniciais (mesmo cardápio de src/data/produtos.js) ──
 

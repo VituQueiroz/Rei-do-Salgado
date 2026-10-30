@@ -19,7 +19,7 @@
 Requer o Supabase configurado (veja o README).
 
 1. Acesse `/admin` (ex.: `http://localhost:5173/admin`).
-2. Entre com o e-mail e a senha do administrador criados no Supabase.
+2. Entre com o e-mail e a senha do administrador criados no Supabase. Contas que não estão na tabela `admins` veem a mensagem "Acesso negado".
 3. No painel:
    - **+ Novo produto**: preencha foto, nome, descrição, preço (ex.: `7,50`), categoria e disponibilidade. Para criar uma categoria nova, digite no campo "Nova categoria" e clique em **Adicionar**.
    - **Editar**: altera qualquer dado do produto, inclusive a foto.
@@ -38,13 +38,12 @@ Requer o Supabase configurado (veja o README).
 ## 4. O que precisa ser implementado depois
 
 ### Obrigatório para colocar no ar
-- [ ] Criar o projeto no Supabase, rodar `supabase/schema.sql` e criar o usuário administrador.
-- [ ] **Desativar o cadastro público** no Supabase (Authentication → Sign In / Providers → "Allow new users to sign up"). Sem isso, qualquer pessoa pode criar conta e editar o cardápio.
+- [ ] Criar o projeto no Supabase, rodar `supabase/schema.sql`, criar o usuário administrador e cadastrá-lo com `supabase/admin.sql`.
+- [ ] Desativar o cadastro público no Supabase (Authentication → Sign In / Providers → "Allow new users to sign up").
 - [ ] Cadastrar `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` e `VITE_WHATSAPP_NUMBER` na Vercel e fazer redeploy.
 - [ ] Testar o painel com o banco real.
 
 ### Melhorias recomendadas
-- [ ] **Tabela de administradores**: hoje qualquer usuário logado é admin. Criar uma tabela `admins` e usar nas regras (RLS) deixa isso mais seguro.
 - [ ] **Gerenciar categorias**: renomear, excluir e mudar a ordem pelo painel (hoje só dá para criar).
 - [ ] **Limpar fotos antigas**: ao trocar a foto ou excluir um produto, apagar o arquivo antigo do Storage.
 - [ ] **Salvar pedidos no banco** (tabela `pedidos`) e criar uma tela de pedidos no painel, com status (recebido, em preparo, entregue).

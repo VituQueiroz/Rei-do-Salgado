@@ -10,6 +10,7 @@ import {
   sair,
   obterSessao,
   observarSessao,
+  ehAdministrador,
 } from "../services/produtosService";
 import FormProduto from "../components/admin/FormProduto";
 
@@ -282,11 +283,21 @@ function Painel() {
 export default function Admin() {
   // undefined = ainda verificando | null = deslogado | objeto = logado
   const [sessao, setSessao] = useState(undefined);
+  // Resultado da checagem na tabela "admins", guardado por usuário
+  const [verificacao, setVerificacao] = useState({ userId: null, admin: false });
+  const userId = sessao?.user?.id;
 
   useEffect(() => {
     obterSessao().then(setSessao);
     return observarSessao(setSessao);
   }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+    ehAdministrador()
+      .catch(() => false)
+      .then((admin) => setVerificacao({ userId, admin }));
+  }, [userId]);
 
   if (!supabaseConfigurado) {
     return (
@@ -309,5 +320,28 @@ export default function Admin() {
     return <p className="text-center py-16 text-gray-400 font-body">Carregando...</p>;
   }
 
-  return sessao ? <Painel /> : <Login />;
+  if (!sessao) return <Login />;
+
+  if (verificacao.userId !== userId) {
+    return <p className="text-center py-16 text-gray-400 font-body">Verificando permissões...</p>;
+  }
+
+  if (!verificacao.admin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 bg-salgado-light">
+        <div className="bg-white max-w-md rounded-2xl border border-salgado-warm p-6 space-y-3 font-body text-salgado-dark">
+          <h1 className="font-display font-bold text-2xl">Acesso negado</h1>
+          <p className="text-sm">
+            A conta <strong>{sessao.user.email}</strong> não é administradora. Peça para
+            cadastrá-la com o script <code>supabase/admin.sql</code>.
+          </p>
+          <button onClick={sair} className="text-sm text-salgado-deep hover:underline">
+            Sair e entrar com outra conta
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return <Painel />;
 }

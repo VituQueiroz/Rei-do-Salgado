@@ -168,16 +168,17 @@ O cardápio é armazenado no [Supabase](https://supabase.com/) (PostgreSQL). Se 
 
 1. Crie um projeto gratuito em [supabase.com](https://supabase.com/).
 2. Em **SQL Editor → New query**, cole o conteúdo de `supabase/schema.sql` e clique em **Run**. Isso cria as tabelas `categorias` e `produtos`, as regras de segurança, o bucket de fotos e o cardápio inicial.
-3. Em **Authentication → Users → Add user**, crie o usuário administrador (e-mail e senha).
-   Depois, em **Authentication → Sign In / Providers**, **desative "Allow new users to sign up"** — caso contrário qualquer pessoa poderia criar uma conta e editar o cardápio.
-4. Em **Project Settings → API**, copie a *Project URL* e a chave *anon public* para o `.env`:
+3. Em **Authentication → Users → Add user**, crie o usuário administrador (e-mail e senha) e marque **Auto Confirm User**.
+4. No **SQL Editor**, abra `supabase/admin.sql`, troque o e-mail pelo do administrador e clique em **Run**. Só usuários cadastrados na tabela `admins` podem alterar o cardápio.
+5. Em **Authentication → Sign In / Providers**, desative **"Allow new users to sign up"** (recomendado; o site não usa cadastro público).
+6. Em **Project Settings → API**, copie a *Project URL* e a chave *anon public* para o `.env`:
 
 ```env
 VITE_SUPABASE_URL=https://xxxxxxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
 ```
 
-> A chave *anon* pode ficar no front-end: as regras de segurança (RLS) do banco só permitem leitura para visitantes. Inserir, alterar e excluir exige login. **Nunca** use a chave *service_role* no front-end.
+> A chave *anon* pode ficar no front-end: as regras de segurança (RLS) do banco só permitem leitura para visitantes. Inserir, alterar e excluir exige login de um usuário cadastrado em `admins`. **Nunca** use a chave *service_role* no front-end.
 
 ### Usando o painel
 
