@@ -222,12 +222,6 @@ Por favor, confirme meu pedido! 😊
 
 ---
 
-## 👨‍💻 Autor
-
-Desenvolvido por **Breno Pavanelli dos Santos**
-
-[![GitHub](https://img.shields.io/badge/GitHub-seu--usuario-181717?logo=github)](https://github.com/brenopavanelli)
-
 ---
 
 ## 📄 Licença
