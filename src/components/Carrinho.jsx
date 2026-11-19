@@ -131,7 +131,9 @@ export default function Carrinho({
       frete,
       subtotal
     );
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensagem)}`;
+    // api.whatsapp.com em vez de wa.me: o redirecionamento do wa.me troca
+    // emojis por "?" no WhatsApp Web/Desktop
+    const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(mensagem)}`;
     window.open(url, "_blank");
   }
 
