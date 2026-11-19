@@ -10,10 +10,17 @@ function TituloSecao({ children }) {
   );
 }
 
-function LinkFooter({ href = "#", children }) {
+function LinkFooter({ href = "#", onClick, children }) {
+  function handleClick(e) {
+    if (!onClick) return;
+    e.preventDefault();
+    onClick();
+  }
+
   return (
     <a
       href={href}
+      onClick={handleClick}
       className="font-body text-sm text-brand-200 hover:text-brand-300 transition-colors duration-150 flex items-center gap-1.5 group"
     >
       <span className="w-1 h-1 rounded-full bg-brand-500 group-hover:bg-brand-300 transition-colors flex-shrink-0" />
@@ -22,7 +29,8 @@ function LinkFooter({ href = "#", children }) {
   );
 }
 
-export default function Footer() {
+// categorias: lista vinda do banco (sem "Todos"); onSelecionarCategoria filtra o cardápio
+export default function Footer({ categorias = [], onSelecionarCategoria }) {
   return (
     <footer className="bg-salgado-dark mt-16">
 
@@ -67,11 +75,18 @@ export default function Footer() {
           <div>
             <TituloSecao>🗺️ Mapa do Site</TituloSecao>
             <nav className="space-y-2">
-              <LinkFooter>Cardápio</LinkFooter>
-              <LinkFooter>Salgados Fritos</LinkFooter>
-              <LinkFooter>Salgados Assados</LinkFooter>
-              <LinkFooter>Lanches</LinkFooter>
-              <LinkFooter>Bebidas</LinkFooter>
+              <LinkFooter href="#cardapio" onClick={() => onSelecionarCategoria?.("Todos")}>
+                Cardápio
+              </LinkFooter>
+              {categorias.map((cat) => (
+                <LinkFooter
+                  key={cat}
+                  href="#cardapio"
+                  onClick={() => onSelecionarCategoria?.(cat)}
+                >
+                  {cat}
+                </LinkFooter>
+              ))}
             </nav>
           </div>
 

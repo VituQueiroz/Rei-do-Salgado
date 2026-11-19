@@ -59,6 +59,13 @@ export default function App() {
     return carrinho.find((i) => i.id === id)?.quantidade ?? 0;
   }
 
+  // Usado pelo Mapa do Site no rodapé: filtra a categoria e rola até o cardápio
+  function irParaCategoria(categoria) {
+    setCategoriaAtiva(categoria);
+    setBusca("");
+    document.getElementById("cardapio")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   const produtosFiltrados = useMemo(() => {
     return produtos.filter((p) => {
       const porCategoria =
@@ -95,7 +102,7 @@ export default function App() {
         </section>
 
         {/* Busca */}
-        <div className="relative">
+        <div id="cardapio" className="relative scroll-mt-24">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
             🔍
           </span>
@@ -171,7 +178,10 @@ export default function App() {
         />
       )}
       
-      <Footer />
+      <Footer
+        categorias={categorias.filter((c) => c !== "Todos")}
+        onSelecionarCategoria={irParaCategoria}
+      />
     </div>
     
   );
